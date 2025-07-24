@@ -137,7 +137,7 @@ export default function RegisterPage() {
               href="/auth/login"
               className="block text-center w-full bg-orange-600 text-white py-2 rounded hover:bg-orange-700"
             >
-              Already have an account
+              Already account
             </Link>
 
             {/* <Link href="/auth/login"  className="w-full bg-orange-600 text-white py-2 rounded hover:bg-blue-700">
