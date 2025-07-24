@@ -21,7 +21,7 @@ export default function DashboardLayout({ children }) {
         setProfile(data);
         dispatch(setProfilePicture(data));
       } catch (err) {
-        console.error('Failed to load profile:', err.message);
+        console.error('Failed to load profilee:', err.message);
       }
     };
 
