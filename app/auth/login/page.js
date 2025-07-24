@@ -75,9 +75,13 @@ export default function LoginPage() {
             >
               {isSubmitting ? 'Logging in...' : 'Login'}
             </button>
-     <Link href="/auth/register"  className="w-full bg-orange-600 text-white py-2 rounded hover:bg-blue-700">
-            New Account
-            </Link>
+            <Link
+  href="/auth/register"
+  className="block text-center w-full bg-orange-600 text-white py-2 rounded hover:bg-orange-700"
+>
+  New Account
+</Link>
+
           </Form>
         )}
       </Formik>

@@ -31,12 +31,12 @@ export default function RegisterPage() {
     address: Yup.string().required('Address is required'),
   });
 
-  
+
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-  
-      const data = await apiRequest('auth/signup', 'POST', JSON.stringify(values));    
-  
+
+      const data = await apiRequest('auth/signup', 'POST', JSON.stringify(values));
+
       if (data) {
         dispatch(setCredentials({ user: data.user, token: data.token }));
         toast.success('Registered successfully!');
@@ -51,7 +51,7 @@ export default function RegisterPage() {
       setSubmitting(false);
     }
   };
-  
+
 
   return (
     <div className="max-w-md mx-auto mt-20">
@@ -93,25 +93,25 @@ export default function RegisterPage() {
               <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
             </div>
             <div>
-  <label className="block mb-1">Phone</label>
-  <Field
-    type="text"
-    name="phone"
-    className="w-full border px-4 py-2 rounded"
-  />
-  <ErrorMessage name="phone" component="div" className="text-red-500 text-sm" />
-</div>
+              <label className="block mb-1">Phone</label>
+              <Field
+                type="text"
+                name="phone"
+                className="w-full border px-4 py-2 rounded"
+              />
+              <ErrorMessage name="phone" component="div" className="text-red-500 text-sm" />
+            </div>
 
-<div>
-  <label className="block mb-1">Address</label>
-  <Field
-    as="textarea"
-    name="address"
-    className="w-full border px-4 py-2 rounded"
-    rows={2}
-  />
-  <ErrorMessage name="address" component="div" className="text-red-500 text-sm" />
-</div>
+            <div>
+              <label className="block mb-1">Address</label>
+              <Field
+                as="textarea"
+                name="address"
+                className="w-full border px-4 py-2 rounded"
+                rows={2}
+              />
+              <ErrorMessage name="address" component="div" className="text-red-500 text-sm" />
+            </div>
 
 
             <div>
@@ -133,9 +133,16 @@ export default function RegisterPage() {
             >
               {isSubmitting ? 'Registering...' : 'Register'}
             </button>
-            <Link href="/auth/login"  className="w-full bg-orange-600 text-white py-2 rounded hover:bg-blue-700">
-             Already have an account
+            <Link
+              href="/auth/login"
+              className="block text-center w-full bg-orange-600 text-white py-2 rounded hover:bg-orange-700"
+            >
+              Already have an account
             </Link>
+
+            {/* <Link href="/auth/login"  className="w-full bg-orange-600 text-white py-2 rounded hover:bg-blue-700">
+             Already have an account
+            </Link> */}
           </Form>
         )}
       </Formik>
