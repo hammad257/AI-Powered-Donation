@@ -7,12 +7,14 @@ import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { apiRequest } from '../services/api';
 import { setCredentials, setProfilePicture } from '../redux/features/authSlice';
+import { signOut, useSession } from 'next-auth/react';
 
 export default function DashboardLayout({ children }) {
   const { token } = useSelector((state) => state.auth);
   const [profile, setProfile] = useState(null);
 
   const dispatch = useDispatch();
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -83,11 +85,20 @@ export default function DashboardLayout({ children }) {
             {/* ✅ User Info just below title */}
             {profile && (
               <div className="mb-6 flex items-center gap-3">
-                <img
-                  src={profile.profilePic || '/default-user.png'}
+                {
+                  session ? 
+                  <img
+                  src={session.user.image || '/default-user.png'}
                   alt="Profile"
                   className="w-10 h-10 rounded-full object-cover border"
                 />
+                :
+                <img
+                src={profile.profilePic || '/default-user.png'}
+                alt="Profile"
+                className="w-10 h-10 rounded-full object-cover border"
+                />
+              }
                 <div className="overflow-hidden">
                   <p className="font-semibold break-words max-w-[10rem] leading-snug">
                     {profile.name}
@@ -95,7 +106,7 @@ export default function DashboardLayout({ children }) {
                   <p className="text-sm text-gray-300">{profile.role}</p>
                   {profile.phone && (
                     <p className="text-xs text-gray-400 break-words">
-                       {profile.phone}
+                      {profile.phone}
                     </p>
                   )}
                   {profile.address && (
@@ -116,7 +127,19 @@ export default function DashboardLayout({ children }) {
             <Link href="/dashboard/profile" className="block hover:bg-gray-700 px-2 py-1 rounded">
               Profile
             </Link>
-            <LogoutButton />
+            {session ? (
+              <button
+                onClick={() => signOut({ callbackUrl: '/auth/login' })}
+                className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700"
+              >
+                Logout (Google)
+              </button>
+            )
+              :
+              token ? (
+                <LogoutButton />
+              )
+                : null}
           </div>
         </aside>
 
