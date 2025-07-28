@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { apiRequest } from '../../../services/api';
+import LocationPicker from './FoodLocationPicker';
 
 const FoodDonationForm = () => {
   const { token } = useSelector((state) => state.auth);
@@ -12,15 +13,20 @@ const FoodDonationForm = () => {
   const initialValues = {
     foodType: '',
     quantity: '',
-    location: '',
-
+    location: '', // Keep for address input if needed
+    lat: '',
+    lng: '',
   };
+  
 
   const validationSchema = Yup.object({
     foodType: Yup.string().required('Food type is required'),
     quantity: Yup.string().required('Quantity is required'),
     location: Yup.string().required('Pickup location is required'),
+    lat: Yup.number().required('Location latitude is required'),
+    lng: Yup.number().required('Location longitude is required'),
   });
+  
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
@@ -43,7 +49,7 @@ const FoodDonationForm = () => {
     <div className="max-w-2xl mx-auto mt-6 border p-4 rounded shadow bg-white">
       <h2 className="text-xl font-semibold mb-4">🍱 Submit Food Donation</h2>
       <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
-        {({ isSubmitting }) => (
+        {({ isSubmitting,setFieldValue }) => (
           <Form className="space-y-4">
             <div>
               <label className="block mb-1">Food Type</label>
@@ -58,10 +64,23 @@ const FoodDonationForm = () => {
             </div>
 
             <div>
-              <label className="block mb-1">Pickup Location</label>
-              <Field name="location" className="w-full border p-2 rounded" />
-              <ErrorMessage name="location" component="div" className="text-red-500 text-sm" />
-            </div>
+  <label className="block mb-1">Pickup Location</label>
+  <Field name="location" className="w-full border p-2 rounded" placeholder="Enter address or area" />
+  <ErrorMessage name="location" component="div" className="text-red-500 text-sm" />
+
+</div>
+<div>
+  
+    <LocationPicker
+    onLocationSelect={(pos) => {
+     setFieldValue('lat', pos.lat);
+      setFieldValue('lng', pos.lng);
+    }}
+  />
+
+  <ErrorMessage name="lat" component="div" className="text-red-500 text-sm" />
+  <ErrorMessage name="lng" component="div" className="text-red-500 text-sm" />
+</div>
 
             <button
               type="submit"
