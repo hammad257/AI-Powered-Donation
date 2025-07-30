@@ -35,16 +35,33 @@ export default function MyFoodDonations() {
             <div key={donation._id} className="border p-4 rounded shadow bg-white">
               <h2 className="text-lg font-semibold">{donation.foodType}</h2>
               <p className="text-sm text-gray-600 mb-2">{donation.description}</p>
-              <p><strong>Status:</strong> {donation.status}</p>
+
+              <p className="flex items-center gap-2">
+                <strong>Status:</strong>
+                <span
+                  className={`capitalize ${
+                    donation.status === 'picked'
+                      ? 'text-green-600 font-semibold'
+                      : donation.status === 'delivered'
+                      ? 'text-blue-600 font-semibold'
+                      : 'text-gray-800'
+                  }`}
+                >
+                  {donation.status}
+                  {donation.status === 'picked' && (
+                    <span className="ml-2 text-green-600">✔</span> // green tick
+                  )}
+                </span>
+              </p>
+
               <p><strong>Location:</strong> {donation.location}</p>
 
               {donation.status === 'picked' && (
-  <ChatBox
-    receiverId={donation.pickedBy}
-    donationId={donation._id}
-  />
-)}
-
+                <ChatBox
+                  receiverId={donation.pickedBy}
+                  donationId={donation._id}
+                />
+              )}
             </div>
           ))}
         </div>

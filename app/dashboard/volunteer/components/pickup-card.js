@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { apiRequest } from '../../../services/api';
 import ChatBox from '../../shared/ChatBox';
+import DonationMiniMap from './DonationMiniMap';
 
 export default function MyPickups() {
   const { token } = useSelector((state) => state.auth);
@@ -48,6 +49,8 @@ export default function MyPickups() {
               <p><strong>Location:</strong> {pickup.location}</p>
               <p><strong>Status:</strong> <span className={`font-semibold ${pickup.status === 'delivered' ? 'text-green-600' : 'text-yellow-600'}`}>{pickup.status}</span></p>
               <p><strong>Accepted At:</strong> {new Date(pickup.acceptedAt || pickup.updatedAt).toLocaleString()}</p>
+
+              <DonationMiniMap donation={pickup} />
 
               {pickup.status !== 'delivered' && (
                 <button
