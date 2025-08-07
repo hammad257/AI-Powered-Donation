@@ -8,16 +8,21 @@ import { setCredentials } from '../../redux/features/authSlice';
 import { toast } from 'react-toastify';
 import { apiRequest } from '@/app/services/api';
 import Link from 'next/link';
+import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react'; // using lucide icons
 
 export default function RegisterPage() {
   const initialValues = {
     name: '',
     email: '',
     password: '',
-    role: '', // donor, needy, volunteer
-    phone: '',      // ✅ new
-    address: '',    // 
+    role: '',
+    phone: '',
+    address: '',
   };
+
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePassword = () => setShowPassword(prev => !prev);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -31,12 +36,9 @@ export default function RegisterPage() {
     address: Yup.string().required('Address is required'),
   });
 
-
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-
       const data = await apiRequest('auth/signup', 'POST', JSON.stringify(values));
-
       if (data) {
         dispatch(setCredentials({ user: data.user, token: data.token }));
         toast.success('Registered successfully!');
@@ -52,100 +54,120 @@ export default function RegisterPage() {
     }
   };
 
-
   return (
-    <div className="max-w-md mx-auto mt-20">
-      <h1 className="text-2xl font-bold mb-6 text-center">Register</h1>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting }) => (
-          <Form className="space-y-4">
-            <div>
-              <label className="block mb-1">Name</label>
-              <Field
-                type="text"
-                name="name"
-                className="w-full border px-4 py-2 rounded"
-              />
-              <ErrorMessage name="name" component="div" className="text-red-500 text-sm" />
-            </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-blue-100 to-purple-100 px-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8">
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Create Account</h1>
+        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
+          {({ isSubmitting }) => (
+            <Form className="space-y-5">
+              {/* Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <Field
+                  type="text"
+                  name="name"
+                  placeholder="Full Name"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                />
+                <ErrorMessage name="name" component="div" className="text-sm text-red-500 mt-1" />
+              </div>
 
-            <div>
-              <label className="block mb-1">Email</label>
-              <Field
-                type="email"
-                name="email"
-                className="w-full border px-4 py-2 rounded"
-              />
-              <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
-            </div>
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <Field
+                  type="email"
+                  name="email"
+                  placeholder="you@example.com"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                />
+                <ErrorMessage name="email" component="div" className="text-sm text-red-500 mt-1" />
+              </div>
 
-            <div>
-              <label className="block mb-1">Password</label>
-              <Field
-                type="password"
-                name="password"
-                className="w-full border px-4 py-2 rounded"
-              />
-              <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
-            </div>
-            <div>
-              <label className="block mb-1">Phone</label>
-              <Field
-                type="text"
-                name="phone"
-                className="w-full border px-4 py-2 rounded"
-              />
-              <ErrorMessage name="phone" component="div" className="text-red-500 text-sm" />
-            </div>
-
-            <div>
-              <label className="block mb-1">Address</label>
-              <Field
-                as="textarea"
-                name="address"
-                className="w-full border px-4 py-2 rounded"
-                rows={2}
-              />
-              <ErrorMessage name="address" component="div" className="text-red-500 text-sm" />
-            </div>
+              {/* Password */}
+              <div className="relative">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <Field
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  placeholder="••••••••"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={togglePassword}
+                  className="absolute right-3 top-11 transform -translate-y-1/2 text-gray-500 hover:text-gray-800"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+                <ErrorMessage name="password" component="div" className="text-sm text-red-500 mt-1" />
+              </div>
 
 
-            <div>
-              <label className="block mb-1">Role</label>
-              <Field as="select" name="role" className="w-full border px-4 py-2 rounded">
-                <option value="">Select Role</option>
-                <option value="admin">Admin</option>
-                <option value="donor">Donor</option>
-                <option value="needy">Needy</option>
-                <option value="volunteer">Volunteer</option>
-              </Field>
-              <ErrorMessage name="role" component="div" className="text-red-500 text-sm" />
-            </div>
+              {/* Phone */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <Field
+                  type="text"
+                  name="phone"
+                  placeholder="+92 3XX XXXXXXX"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                />
+                <ErrorMessage name="phone" component="div" className="text-sm text-red-500 mt-1" />
+              </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
-            >
-              {isSubmitting ? 'Registering...' : 'Register'}
-            </button>
-            <Link
-              href="/auth/login"
-              className="block text-center w-full bg-orange-600 text-white py-2 rounded hover:bg-orange-700"
-            >
-              Already account
-            </Link>
+              {/* Address */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                <Field
+                  as="textarea"
+                  name="address"
+                  rows={2}
+                  placeholder="Street, City, Zip"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                />
+                <ErrorMessage name="address" component="div" className="text-sm text-red-500 mt-1" />
+              </div>
 
-            {/* <Link href="/auth/login"  className="w-full bg-orange-600 text-white py-2 rounded hover:bg-blue-700">
-             Already have an account
-            </Link> */}
-          </Form>
-        )}
-      </Formik>
+              {/* Role */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                <Field
+                  as="select"
+                  name="role"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                >
+                  <option value="">Select Role</option>
+                  <option value="admin">Admin</option>
+                  <option value="donor">Donor</option>
+                  <option value="needy">Needy</option>
+                  <option value="volunteer">Volunteer</option>
+                </Field>
+                <ErrorMessage name="role" component="div" className="text-sm text-red-500 mt-1" />
+              </div>
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition"
+              >
+                {isSubmitting ? 'Registering...' : 'Register'}
+              </button>
+
+              {/* Already account */}
+              <div className="text-center text-sm mt-4">
+                Already have an account?{' '}
+                <Link href="/auth/login" className="text-orange-600 hover:underline font-medium">
+                  Login
+                </Link>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </div>
     </div>
   );
 }

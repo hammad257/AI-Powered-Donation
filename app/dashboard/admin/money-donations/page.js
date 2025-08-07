@@ -13,7 +13,7 @@ export default function AdminMoneyDonationsPage() {
   return (
     <ProtectedRoute allowedRoles={['admin']}>
        <div>
-         <h1 className="text-2xl font-bold mb-4">👥 Manage Money Donation</h1>
+         <h1 className="text-2xl font-bold mb-4">Manage Money Donation</h1>
          <ManageAdminMoneyDonations />
        </div>
        </ProtectedRoute >

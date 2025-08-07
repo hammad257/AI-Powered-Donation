@@ -7,7 +7,7 @@ export default function AdminDashboard() {
   return (
     <ProtectedRoute allowedRoles={['admin']}>
       <div className="p-4">
-        <h1 className="text-xl font-bold">🎁 Admin Dashboard</h1>
+        <h1 className="text-2xl font-bold mb-4">Manage Needy Request</h1>
         <AdminHelpRequests />
       </div>
     </ProtectedRoute>
