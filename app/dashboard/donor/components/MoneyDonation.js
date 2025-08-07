@@ -4,37 +4,28 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { apiRequest } from '../../../services/api';
-import dynamic from 'next/dynamic';
 
-const DonationMiniMap = dynamic(
-  () => import('../components/DonationMiniMap'),
-  { ssr: false }
-);
-
-export default function AvailablePickups() {
+export default function MyMoneyDonations() {
+  const { token } = useSelector((state) => state.auth);
   const [donations, setDonations] = useState([]);
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [statusFilter, setStatusFilter] = useState('pending');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const itemsPerPage = 6;
-
-  const { token } = useSelector((state) => state.auth);
 
   const fetchDonations = async () => {
     try {
-      const data = await apiRequest('/volunteer/food/available', 'GET', null, token);
+      const query = new URLSearchParams();
+      if (statusFilter) query.append('status', statusFilter);
+      if (startDate) query.append('startDate', startDate);
+      if (endDate) query.append('endDate', endDate);
+
+      const data = await apiRequest(`/money/all?${query.toString()}`, 'GET', null, token);
       setDonations(data);
     } catch (err) {
       toast.error(err.message || 'Failed to load donations');
-    }
-  };
-
-  const acceptPickup = async (donationId) => {
-    try {
-      await apiRequest(`/volunteer/food/accept/${donationId}`, 'POST', {}, token);
-      toast.success('Pickup accepted!');
-      fetchDonations();
-    } catch (err) {
-      toast.error(err.message || 'Failed to accept pickup');
     }
   };
 
@@ -42,12 +33,12 @@ export default function AvailablePickups() {
     fetchDonations();
   }, []);
 
-  // Filter donations by search
-  const filteredDonations = donations.filter((donation) =>
-    donation.foodType?.toLowerCase().includes(search.toLowerCase()) ||
-    donation.description?.toLowerCase().includes(search.toLowerCase()) ||
-    donation.donor?.name?.toLowerCase().includes(search.toLowerCase()) ||
-    donation.location?.toLowerCase().includes(search.toLowerCase())
+  // Search filter
+  const filteredDonations = donations.filter(
+    (donation) =>
+      donation.amount?.toString().includes(search) ||
+      donation.purpose?.toLowerCase().includes(search.toLowerCase()) ||
+      donation.status?.toLowerCase().includes(search.toLowerCase())
   );
 
   // Pagination logic
@@ -58,24 +49,25 @@ export default function AvailablePickups() {
 
   return (
     <div className="p-4">
-      {/* Header + Search */}
+      {/* Header & Search */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-        <h1 className="text-2xl font-bold">📦 Available Food Pickups</h1>
+        <h1 className="text-2xl font-bold">💰 My Money Donations</h1>
+
         <input
           type="text"
-          placeholder="Search by food type, donor, or location..."
+          placeholder="Search by amount, purpose, or status..."
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
             setCurrentPage(1);
           }}
-          className="border px-3 py-2 rounded shadow-sm focus:ring-2 focus:ring-blue-500 outline-none"
+          className="border px-3 py-2 rounded shadow-sm focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-64"
         />
       </div>
 
       {/* Donations List */}
       {currentItems.length === 0 ? (
-        <p className="text-gray-600">No pickups available right now.</p>
+        <p className="text-gray-600">No donations found.</p>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {currentItems.map((donation) => (
@@ -84,24 +76,29 @@ export default function AvailablePickups() {
               className="border border-gray-200 rounded-lg shadow-md bg-white p-4 transition hover:shadow-lg"
             >
               <h2 className="text-lg font-semibold text-gray-800 truncate">
-                {donation.foodType}
+                Amount: {donation.amount}
               </h2>
               <p className="text-sm text-gray-600 mb-2 truncate">
-                {donation.description}
+                Purpose: {donation.purpose}
               </p>
-              <p className="text-sm"><strong>Donor:</strong> {donation.donor?.name || 'N/A'}</p>
-              <p className="text-sm"><strong>Location:</strong> {donation.location}</p>
-              <p className="text-sm"><strong>Created:</strong> {new Date(donation.createdAt).toLocaleString()}</p>
 
-              {/* Mini map */}
-              <DonationMiniMap donation={donation} />
-
-              <button
-                onClick={() => acceptPickup(donation._id)}
-                className="mt-3 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-              >
-                Accept Pickup
-              </button>
+              <p className="flex items-center gap-2 mb-1">
+                <strong>Status:</strong>
+                <span
+                  className={`capitalize ${
+                    donation.status === 'approved'
+                      ? 'text-green-600 font-semibold'
+                      : donation.status === 'rejected'
+                      ? 'text-red-600 font-semibold'
+                      : 'text-gray-800'
+                  }`}
+                >
+                  {donation.status}
+                  {donation.status === 'approved' && (
+                    <span className="ml-1 text-green-600">✔</span>
+                  )}
+                </span>
+              </p>
             </div>
           ))}
         </div>

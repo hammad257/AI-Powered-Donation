@@ -35,42 +35,43 @@ export default function MyHelpRequests() {
     <div className="p-4">
       <h2 className="text-xl font-bold mb-4">My Help Request</h2>
 
-      <table className="w-full table-auto border">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="p-2 border">Reason</th>
-            <th className="p-2 border">Status</th>
-            <th className="p-2 border">Admin Notes</th>
-            <th className="p-2 border">Documents</th>
-            <th className="p-2 border">Submitted At</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="text-center">
-            <td className="p-2 border">{request.reason}</td>
-            <td className="p-2 border capitalize">
-              {request.status}
+      {/* Responsive scroll container */}
+      <div className="overflow-x-auto bg-white rounded-lg shadow">
+        <table className="min-w-full table-auto">
+          <thead>
+            <tr className="bg-gray-100 text-left text-sm font-semibold text-gray-700">
+              <th className="p-3">Reason</th>
+              <th className="p-3">Status</th>
+              <th className="p-3">Admin Notes</th>
+              <th className="p-3">Documents</th>
+              <th className="p-3">Submitted At</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="border-t text-sm text-gray-700">
+              <td className="p-3">{request.reason}</td>
+              <td className="p-3 capitalize font-medium">{request.status}</td>
+              <td className="p-3 text-gray-600">{request.adminNotes || '—'}</td>
+              <td className="p-3">
+                {request.documents.map((doc, i) => (
+                  <a
+                    key={i}
+                    href={doc}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-blue-600 hover:underline truncate max-w-[150px]"
+                  >
+                    {doc.split('/').pop()}
+                  </a>
+                ))}
               </td>
-            <td className="p-2 border text-sm text-gray-600">{request.adminNotes || '—'}</td>
-            <td className="p-2 border">
-              {request.documents.map((doc, i) => (
-                <a
-                  key={i}
-                  href={doc}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-blue-600 underline text-sm"
-                >
-                  {doc.split('/').pop()}
-                </a>
-              ))}
-            </td>
-            <td className="p-2 border text-sm">
-              {new Date(request.submittedAt || request.createdAt).toLocaleString()}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              <td className="p-3 whitespace-nowrap">
+                {new Date(request.submittedAt || request.createdAt).toLocaleString()}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
