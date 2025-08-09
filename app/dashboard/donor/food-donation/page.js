@@ -6,7 +6,12 @@ import MyFoodDonations from "../components/FoodDonation";
 import FoodDonationForm from "../components/FoodDonationForm";
 
 export default function FoodDonationPage() {
-  const [activeTab, setActiveTab] = useState("form"); // default tab: "form"
+  const [activeTab, setActiveTab] = useState("form");
+  const [editingDonation, setEditingDonation] = useState(null);
+
+  const handleCancelEdit = () => {
+    setEditingDonation(null); // hide form
+  };
 
   return (
     <ProtectedRoute allowedRoles={['donor']}>
@@ -21,7 +26,10 @@ export default function FoodDonationPage() {
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
-            onClick={() => setActiveTab("form")}
+            onClick={() => {
+              setActiveTab("form");
+              setEditingDonation(null); // reset when adding new
+            }}
           >
             ➕ Add Donation
           </button>
@@ -39,8 +47,24 @@ export default function FoodDonationPage() {
         </div>
 
         {/* Tab Content */}
-        {activeTab === "form" && <FoodDonationForm />}
-        {activeTab === "list" && <MyFoodDonations />}
+        {activeTab === "form" && (
+          <FoodDonationForm
+            editingDonation={editingDonation}
+            onCancelEdit={handleCancelEdit}
+            onFormSuccess={() => {
+              setActiveTab("list");
+              setEditingDonation(null);
+            }}
+          />
+        )}
+        {activeTab === "list" && (
+          <MyFoodDonations
+            onEdit={(donation) => {
+              setEditingDonation(donation);
+              setActiveTab("form");
+            }}
+          />
+        )}
       </div>
     </ProtectedRoute>
   );
