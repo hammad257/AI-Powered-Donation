@@ -49,7 +49,7 @@ const ChatBox = ({ receiverId, donationId }) => {
     <div className="mt-4">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="mb-2 text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded"
+        className="mb-2 text-sm px-3 py-1 bg-green-200 hover:bg-gray-300 rounded"
       >
         {isOpen ? 'Hide Chat' : 'Show Chat'}
       </button>

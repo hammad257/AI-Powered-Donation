@@ -29,24 +29,22 @@ export default function MyDeliveries() {
     fetchDeliveries();
   }, [token]);
 
-  // Filter deliveries by search term
   const filteredDeliveries = deliveries.filter((d) =>
     `${d.foodType} ${d.donor?.name} ${d.location}`
       .toLowerCase()
       .includes(search.toLowerCase())
   );
 
-  // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredDeliveries.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredDeliveries.length / itemsPerPage);
 
   return (
-    <div className="p-4">
+    <div className="p-4 bg-white">
       {/* Header + Search */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-        <h1 className="text-2xl font-bold">🚚 My Delivered Pickups</h1>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        <h1 className="text-2xl font-extrabold text-green-700">🚚 My Delivered Pickups</h1>
 
         <input
           type="text"
@@ -56,36 +54,36 @@ export default function MyDeliveries() {
             setSearch(e.target.value);
             setCurrentPage(1);
           }}
-          className="border px-3 py-2 rounded shadow-sm focus:ring-2 focus:ring-blue-500 outline-none"
+          className="border border-green-300 px-3 py-2 rounded shadow-sm focus:ring-2 focus:ring-green-500 outline-none max-w-xs"
         />
       </div>
 
       {/* Deliveries List */}
       {currentItems.length === 0 ? (
-        <p className="text-gray-600">No deliveries yet.</p>
+        <p className="text-gray-600 italic">No deliveries yet.</p>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentItems.map((d) => (
             <div
               key={d._id}
-              className="border border-gray-200 rounded-lg shadow-md bg-white p-4 transition hover:shadow-lg"
+              className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow p-6 border border-green-200 flex flex-col min-h-[240px]"
             >
-              <h2 className="text-lg font-semibold text-gray-800 truncate">
+              <h2 className="text-xl font-semibold text-green-900 truncate mb-2">
                 {d.foodType}
               </h2>
-              <p className="text-sm text-gray-600">
-                <strong>Donor:</strong> {d.donor?.name}
+              <p className="text-sm mb-1">
+                <strong className="text-green-600">Donor:</strong> {d.donor?.name || 'N/A'}
               </p>
-              <p className="text-sm text-gray-600">
-                <strong>Location:</strong> {d.location}
+              <p className="text-sm mb-1">
+                <strong className="text-green-600">Location:</strong> {d.location}
               </p>
-              <p className="text-sm text-gray-600">
-                <strong>Delivered At:</strong>{' '}
+              <p className="text-sm mb-1">
+                <strong className="text-green-600">Delivered At:</strong>{' '}
                 {new Date(d.deliveryTime).toLocaleString()}
               </p>
               {d.deliveryDuration && (
-                <p className="text-sm text-gray-700">
-                  <strong>Delivery Duration:</strong> {d.deliveryDuration} minutes
+                <p className="text-sm mt-auto">
+                  <strong className="text-green-500">Delivery Duration:</strong> {d.deliveryDuration} minutes
                 </p>
               )}
             </div>
@@ -102,8 +100,8 @@ export default function MyDeliveries() {
               onClick={() => setCurrentPage(i + 1)}
               className={`px-3 py-1 rounded border ${
                 currentPage === i + 1
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-white text-green-700 hover:bg-green-100'
               }`}
             >
               {i + 1}
