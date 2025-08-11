@@ -27,17 +27,22 @@ export default function LoginPage() {
       handleGoogleLogin(session.user);
     }
   }, [session]);
+  
 
   const handleGoogleLogin = async (googleUser) => {
     try {
+      // In a real UI, you'd ask the user to pick role: admin, donor, ngo, volunteer
+      const selectedRole = localStorage.getItem('selectedRole'); 
+  
       const payload = {
         name: googleUser.name,
         email: googleUser.email,
         picture: googleUser.image,
+        role: selectedRole, // 👈 send it here
       };
-
+  
       const data = await apiRequest('/auth/social-login', 'POST', JSON.stringify(payload));
-
+  
       if (data?.token) {
         dispatch(setCredentials({ user: data.user, token: data.token }));
         localStorage.setItem('userInfo', JSON.stringify({ user: data.user, token: data.token }));
@@ -51,6 +56,7 @@ export default function LoginPage() {
       toast.error('Google login failed!');
     }
   };
+  
 
   const validationSchema = Yup.object({
     email: Yup.string().email('Invalid email').required('Email is required'),
