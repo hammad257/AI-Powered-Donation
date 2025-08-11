@@ -61,23 +61,43 @@ export default function ProfilePage() {
       <h1 className="text-3xl font-semibold mb-10 text-center text-gray-800">My Profile</h1>
 
       {/* Profile Picture */}
-      <div className="flex flex-col items-center mb-8">
-        <label htmlFor="profilePicInput" className="cursor-pointer">
-          <img
-            src={preview || '/default-user.png'}
-            alt="Profile"
-            className="w-28 h-28 rounded-full object-cover border-4 border-gray-300 shadow-md hover:opacity-80 transition"
-          />
-        </label>
-        <input
-          id="profilePicInput"
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="hidden"
-        />
-        <p className="text-sm text-gray-500 mt-2">Click image to upload a new one</p>
-      </div>
+<div className="flex flex-col items-center mb-8">
+  <label htmlFor="profilePicInput" className="cursor-pointer">
+    <img
+      src={preview || '/default-user.png'}
+      alt="Profile"
+      className="w-28 h-28 rounded-full object-cover border-4 border-gray-300 shadow-md hover:opacity-80 transition"
+    />
+  </label>
+  <input
+    id="profilePicInput"
+    type="file"
+    accept="image/*"
+    onChange={handleFileChange}
+    className="hidden"
+  />
+  <p className="text-sm text-gray-500 mt-2">Click image to upload a new one</p>
+
+  {/* Remove Picture Button */}
+  {preview && (
+    <button
+      type="button"
+      onClick={async () => {
+        try {
+          await apiRequest('/profile/remove-photo', 'DELETE', null, token);
+          setPreview('');
+          toast.success('Profile picture removed');
+        } catch (err) {
+          toast.error(err.message || 'Failed to remove profile picture');
+        }
+      }}
+      className="mt-3 px-4 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded-full shadow-sm transition duration-200"
+    >
+      Remove Picture
+    </button>
+  )}
+</div>
+
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
