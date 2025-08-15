@@ -132,7 +132,7 @@ export default function MyFoodDonations({ onEdit }) {
           <div className="w-full">
             <ChatBox receiverId={donation.pickedBy} donationId={donation._id} />
           </div>
-         
+
         </div>
       );
     }
@@ -195,15 +195,14 @@ export default function MyFoodDonations({ onEdit }) {
                 <p className="flex items-center gap-2 mb-1">
                   <strong>Status:</strong>
                   <span
-                    className={`capitalize font-semibold ${
-                      donation.status === 'picked'
+                    className={`capitalize font-semibold ${donation.status === 'picked'
                         ? 'text-green-600'
                         : donation.status === 'delivered'
-                        ? 'text-blue-600'
-                        : donation.status === 'pending'
-                        ? 'text-yellow-600'
-                        : 'text-gray-800'
-                    }`}
+                          ? 'text-blue-600'
+                          : donation.status === 'pending'
+                            ? 'text-yellow-600'
+                            : 'text-gray-800'
+                      }`}
                   >
                     {donation.status}
                   </span>
@@ -211,6 +210,21 @@ export default function MyFoodDonations({ onEdit }) {
                 <p className="mb-3 truncate max-w-[200px]">
                   <strong>Location:</strong> {donation.location}
                 </p>
+                {/* Thumbnail image */}
+                {donation.image && (
+                  <a
+                    href={donation.image}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src={donation.image}
+                      alt={donation.foodType}
+                      className="w-20 h-20 object-cover rounded-md border border-gray-200 hover:opacity-80 transition"
+                    />
+                  </a>
+                )}
+
 
                 {/* Status Message Card */}
                 <StatusMessageCard type={donation.status} donation={donation} />
@@ -227,11 +241,10 @@ export default function MyFoodDonations({ onEdit }) {
             <button
               key={i}
               onClick={() => setCurrentPage(i + 1)}
-              className={`px-3 py-1 rounded border ${
-                currentPage === i + 1
+              className={`px-3 py-1 rounded border ${currentPage === i + 1
                   ? 'bg-blue-500 text-white'
                   : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
+                }`}
             >
               {i + 1}
             </button>
