@@ -30,11 +30,15 @@ const FoodDonationForm = ({ editingDonation, onFormSuccess, onCancelEdit }) => {
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
+      const formData = new FormData();
+      Object.keys(values).forEach((key) => {
+        formData.append(key, values[key]);
+      });
       if (editingDonation) {
-        await apiRequest(`/food/${editingDonation._id}`, 'PUT', values, token);
+        await apiRequest(`/food/${editingDonation._id}`, 'PUT', values, token,formData);
         toast.success('Food donation updated successfully');
       } else {
-        await apiRequest('/food/donate', 'POST', values, token);
+        await apiRequest('/food/donate', 'POST', values, token,formData);
         toast.success('Food donation submitted successfully');
       }
       resetForm();
@@ -145,6 +149,21 @@ const FoodDonationForm = ({ editingDonation, onFormSuccess, onCancelEdit }) => {
               />
             </div>
 
+            {/* Food Image */}
+            <div>
+              <label className="block text-base font-medium text-gray-700 mb-2">
+                Food Image
+              </label>
+              <input
+                type="file"
+                name="image"
+                accept="image/*"
+                onChange={(e) => setFieldValue('image', e.target.files[0])}
+                className="border border-gray-300 px-4 py-3 rounded-lg w-full text-lg"
+              />
+            </div>
+
+
             {/* Location Picker */}
             <div>
               <LocationPicker
@@ -175,8 +194,8 @@ const FoodDonationForm = ({ editingDonation, onFormSuccess, onCancelEdit }) => {
                 {isSubmitting
                   ? 'Saving...'
                   : editingDonation
-                  ? 'Update Donation'
-                  : 'Submit Donation'}
+                    ? 'Update Donation'
+                    : 'Submit Donation'}
               </button>
 
               {editingDonation && (
