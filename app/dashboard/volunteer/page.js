@@ -51,7 +51,7 @@ export default function VolunteerDashboard() {
       <div className="p-6">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Volunteer Dashboard</h1>
-          <LogoutButton />
+          {/* <LogoutButton /> */}
         </div>
 
         {/* Stat Cards */}
