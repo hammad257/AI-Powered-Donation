@@ -38,7 +38,7 @@ export default function DonorDashboard() {
       <div className="p-6">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Donor Dashboard</h1>
-          <LogoutButton />
+          {/* <LogoutButton /> */}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">

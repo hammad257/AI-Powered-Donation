@@ -34,15 +34,15 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async (googleUser) => {
     try {
-      const storedRole = localStorage.getItem('selectedRole'); 
+      const storedRole = localStorage.getItem('selectedRole');
       const payload = {
         name: googleUser.name,
         email: googleUser.email,
         picture: googleUser.image,
         role: storedRole,
-      };      
+      };
       const data = await apiRequest('/auth/social-login', 'POST', JSON.stringify(payload));
-      
+
       if (data?.token) {
         dispatch(setCredentials({ user: data.user, token: data.token }));
         localStorage.setItem('userInfo', JSON.stringify({ user: data.user, token: data.token }));
@@ -178,6 +178,15 @@ export default function LoginPage() {
                 >
                   {isSubmitting ? 'Logging in...' : 'Login'}
                 </button>
+                <div className="flex justify-between items-center mt-2">
+                  <Link
+                    href="/auth/forget-password"
+                    className="text-sm text-blue-600 hover:underline"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
+
 
                 {/* Register */}
                 <div className="text-center text-sm mt-4">
