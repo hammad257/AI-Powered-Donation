@@ -12,6 +12,7 @@
     "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.10.0",
     "formik": "^2.4.6",
+    "framer-motion": "^12.23.12",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "leaflet-routing-machine": "^3.2.12",
