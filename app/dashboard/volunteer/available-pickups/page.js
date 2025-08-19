@@ -13,6 +13,10 @@ export default function AvailablePickups() {
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [mapToggle, setMapToggle] = useState({});
+  const [userLocation, setUserLocation] = useState(null);
+  const [viewNearestOnly, setViewNearestOnly] = useState(false);
+
+  
   const itemsPerPage = 6;
 
   const { token, user } = useSelector((state) => state.auth); // Assuming user info present in auth state
@@ -54,8 +58,53 @@ export default function AvailablePickups() {
   };
 
   useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setUserLocation({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+          });
+        },
+        (err) => console.error("Geolocation error:", err)
+      );
+    }
     fetchDonations();
   }, []);
+
+  function getDistanceFromLatLng(lat1, lng1, lat2, lng2) {
+    if (
+      typeof lat1 !== "number" ||
+      typeof lng1 !== "number" ||
+      typeof lat2 !== "number" ||
+      typeof lng2 !== "number"
+    ) {
+      return Infinity; // if coords missing, skip this donation
+    }
+  
+    const R = 6371; // km
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLng = ((lng2 - lng1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // distance in km
+  }
+  
+
+  function estimateTravelTime(distance, mode = "driving") {
+    if (!distance || distance === Infinity) return Infinity;
+  
+    // avg speed assumption
+    const speed = mode === "walking" ? 5 : 40; // km/h
+    const time = (distance / speed) * 60; // in minutes
+    return Math.round(time);
+  }
+  
 
   const filteredDonations = donations.filter((donation) =>
     donation.foodType?.toLowerCase().includes(search.toLowerCase()) ||
@@ -76,8 +125,77 @@ export default function AvailablePickups() {
     }));
   };
 
+  let nearestDonation = null;
+
+  if (userLocation && donations.length > 0) {
+    const withTimes = donations.map(donation => {
+      const distance = getDistanceFromLatLng(
+        userLocation.lat,
+        userLocation.lng,
+        donation.lat,
+        donation.lng
+      );
+  
+      const travelTime = estimateTravelTime(distance, "driving");
+  
+      return { ...donation, distance, travelTime };
+    });
+  
+    // filter out invalid ones
+    const valid = withTimes.filter(d => d.travelTime !== Infinity);
+  
+    if (valid.length > 0) {
+      nearestDonation = valid.reduce((min, d) =>
+        d.travelTime < min.travelTime ? d : min
+      );
+    }
+  }
+  
+  const displayedDonations = viewNearestOnly && nearestDonation
+  ? [nearestDonation]
+  : currentItems;
+
+  
+
   return (
     <div className="p-4">
+
+<div className="bg-green-100 border border-green-300 text-green-800 p-4 rounded-xl mb-6 shadow-md">
+  <h2 className="text-lg font-bold">📍 Nearest Pickup</h2>
+  {nearestDonation ? (
+    <div>
+      <p className="mb-3">
+        <strong>{nearestDonation.foodType}</strong> at{" "}
+        {nearestDonation.location} <br />
+        ⏱ {nearestDonation.travelTime} mins ({nearestDonation.distance.toFixed(1)} km)
+      </p>
+
+      <div className="flex gap-2">
+  {!viewNearestOnly ? (
+    <button
+      onClick={() => setViewNearestOnly(true)}
+      className="bg-blue-600 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-700 transition-colors"
+    >
+      View
+    </button>
+  ) : (
+    <button
+      onClick={() => setViewNearestOnly(false)}
+      className="bg-gray-600 text-white px-3 py-1 rounded-md text-sm hover:bg-gray-700 transition-colors"
+    >
+      Back
+    </button>
+  )}
+</div>
+
+    </div>
+  ) : (
+    <p>Finding nearest pickup...</p>
+  )}
+</div>
+
+
+
       {/* Header + Search */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
         <h1 className="text-2xl font-bold">📦 Available Food Pickups</h1>
@@ -94,11 +212,11 @@ export default function AvailablePickups() {
       </div>
 
       {/* Donations List */}
-      {currentItems.length === 0 ? (
+      {displayedDonations.length === 0 ? (
         <p className="text-gray-600">No pickups available right now.</p>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {currentItems.map((donation) => (
+          {displayedDonations.map((donation) => (
             <div
               key={donation._id}
               className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow p-6 border border-gray-100 flex flex-col"
