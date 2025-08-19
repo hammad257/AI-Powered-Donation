@@ -8,7 +8,7 @@ const initialState = {
     token: typeof window !== 'undefined' && localStorage.getItem('token')
       ? localStorage.getItem('token')
       : null,
-    profilePicture:''  
+    profilePicture:''
   };
 
 const authSlice = createSlice({
@@ -30,8 +30,6 @@ const authSlice = createSlice({
       localStorage.removeItem('token');
         },
         setProfilePicture: (state, action) => {
-            console.log(state,'state');
-            console.log(action,'action');
             state.profilePicture = action.payload
              
         }

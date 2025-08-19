@@ -205,7 +205,7 @@ export default function MyPickups() {
                   </button>
 
                   {pickup.status === 'picked' && (
-                    <div className="mt-6 p-5 bg-gradient-to-r from-green-50 to-green-100 rounded-xl shadow-md border border-green-200">
+                    <div className="mt-11 p-5 bg-gradient-to-r from-green-50 to-green-100 rounded-xl shadow-md border border-green-200">
                       <div className="flex items-center gap-2 mb-3">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
