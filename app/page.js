@@ -3,8 +3,28 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Home() {
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    needType: "food",
+    details: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Needy request submitted:", formData);
+    // TODO: send to backend: POST /api/needy/request
+    setFormData({ name: "", phone: "", needType: "food", details: "" });
+    alert("✅ Your request has been submitted!");
+  };
+
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-indigo-50 via-white to-indigo-100 overflow-hidden">
       {/* Decorative SVG background */}
@@ -45,12 +65,12 @@ export default function Home() {
 
           {/* Buttons */}
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-            <Link href="/auth/login" className="bg-indigo-600 hover:bg-indigo-700 px-6 py-3 rounded-xl text-lg flex items-center gap-2 text-white shadow-lg transition-transform transform hover:scale-105">
+            <Link
+              href="/auth/login"
+              className="bg-indigo-600 hover:bg-indigo-700 px-6 py-3 rounded-xl text-lg flex items-center gap-2 text-white shadow-lg transition-transform transform hover:scale-105"
+            >
               Get Started <ArrowRight className="w-5 h-5" />
             </Link>
-            {/* <Link href="/auth/login" className="px-6 py-3 rounded-xl text-lg border border-gray-300 hover:bg-gray-100 transition">
-              Learn More
-            </Link> */}
           </div>
         </motion.div>
 
@@ -62,7 +82,7 @@ export default function Home() {
           className="relative w-full max-w-lg"
         >
           <Image
-            src="/child-donate.jpg"   // ✅ path relative to public folder
+            src="/child-donate.jpg"
             alt="Food Donation"
             width={600}
             height={500}
@@ -83,6 +103,82 @@ export default function Home() {
             ❤️ 500+ Donors Joined
           </motion.div>
         </motion.div>
+      </section>
+
+      {/* 🌟 I Need Help Form Section */}
+      <section className="py-20 px-6 lg:px-20 bg-gray-50">
+        <div className="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl p-10 border border-indigo-100">
+          <h2 className="text-3xl font-bold text-center text-indigo-600">
+             I Need Help
+          </h2>
+          <p className="mt-2 text-gray-600 text-center">
+            Fill this form if you need food, money, or assistance. Our team will
+            reach out to you.
+          </p>
+
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+            <div>
+              <label className="block text-gray-700 font-medium">Full Name</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="mt-2 w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500"
+                placeholder="Enter your name"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-medium">Phone Number</label>
+              <input
+                type="text"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+                className="mt-2 w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500"
+                placeholder="03xx-xxxxxxx"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-medium">Type of Help</label>
+              <select
+                name="needType"
+                value={formData.needType}
+                onChange={handleChange}
+                className="mt-2 w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="food">🍛 Food</option>
+                <option value="money">💰 Money</option>
+                <option value="other">📦 Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-medium">Details</label>
+              <textarea
+                name="details"
+                value={formData.details}
+                onChange={handleChange}
+                rows="4"
+                className="mt-2 w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500"
+                placeholder="Explain your situation briefly..."
+              />
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              type="submit"
+              className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold text-lg shadow-md hover:bg-indigo-700 transition"
+            >
+              Submit Request
+            </motion.button>
+          </form>
+        </div>
       </section>
 
       {/* Features Section */}
