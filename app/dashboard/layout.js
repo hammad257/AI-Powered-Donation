@@ -58,6 +58,7 @@ export default function DashboardLayout({ children }) {
         { href: '/dashboard/admin/requests', label: 'Needy Requests' },
         { href: '/dashboard/admin/money-donations', label: 'Manage Money Donation' },
         { href: '/dashboard/admin/food-delivered', label: 'Delivered Pickups' },
+        { href: '/dashboard/admin/dropoff', label: 'DropOff Center' },
         
       ];
     }

@@ -12,16 +12,19 @@ export default function AdminDashboardPage() {
 
   const [stats, setStats] = useState({});
   const [graphData, setGraphData] = useState([]);
+  const [dropoff, setDropoffs] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [statsRes, graph] = await Promise.all([
+        const [statsRes, graph, dropoffRes] = await Promise.all([
           apiRequest('/admin/dashboard/stats', 'GET', null, token),
           apiRequest('/admin/dashboard/graph', 'GET', null, token),
+          apiRequest('/dropoff/all', 'GET', null, token),
         ]);
 
         setStats(statsRes);
+        setDropoffs(dropoffRes);
 
         // ---- Transform API -> chart array ----
         const toMap = (arr = []) => {
@@ -53,6 +56,9 @@ export default function AdminDashboardPage() {
     fetchData();
   }, [token]);
 
+  console.log(dropoff, 'dropoffs');
+
+
   return (
     <ProtectedRoute allowedRoles={['admin']}>
       <div className="min-h-screen bg-gray-50 p-6">
@@ -63,14 +69,46 @@ export default function AdminDashboardPage() {
           <StatCard title="Total Users" value={stats?.users?.total || 'Loading...'} />
           <StatCard title="Total Donations" value={stats?.users?.donors || 'Loading...'} />
           <StatCard title="Volunteers" value={stats?.users?.volunteers || 'Loading...'} />
-          
-          {/* Delivered Orders with total */}
-          <StatCard 
-            title="Delivered Orders" 
-            value={stats?.donations?.delivered || 'Loading...'} 
-            subtitle={`Total: ${stats?.donations?.total || 0}`} 
+          <StatCard
+            title="Delivered Orders"
+            value={stats?.donations?.delivered || 'Loading...'}
+            subtitle={`Total: ${stats?.donations?.total || 0}`}
           />
         </div>
+
+        {/* Dropoff Center Card */}
+        <div className="bg-white p-6 rounded-lg shadow mb-10">
+          <h2 className="text-xl font-semibold mb-4 text-gray-700">🏢 Food Dropoff Centers</h2>
+          <p className="text-2xl font-bold text-green-600 mb-3">{dropoff.total}</p>
+
+          {/* Recently Added */}
+          <h3 className="text-md font-medium text-gray-600 mb-2">Recently Added</h3>
+          {dropoff?.dropoffs?.length > 0 && (
+            <div key={dropoff.dropoffs[0]._id} className="mb-4">
+              <p>
+                <span className="font-semibold">Name:</span> {dropoff.dropoffs[0].ngoName} —{" "}
+                <span className="text-gray-500 text-sm">
+                  {new Date(dropoff.dropoffs[0].createdAt).toLocaleDateString()}
+                </span>
+              </p>
+              <p>
+                <span className="font-semibold">Location:</span> {dropoff?.dropoffs[0]?.locationName}
+              </p>
+            </div>
+          )}
+
+          {/* Dropdown with all centers */}
+          <h3 className="text-md font-medium text-gray-600 mb-2">All Dropoff Centers</h3>
+          <select className="w-full border rounded-lg p-2"
+          >
+            {dropoff?.dropoffs?.map((center) => (
+              <option key={center._id} value={center._id} >
+                {center.ngoName} — {center.locationName}
+              </option>
+            ))}
+          </select>
+        </div>
+
 
         {/* Chart */}
         <div className="bg-white rounded-lg shadow p-6">

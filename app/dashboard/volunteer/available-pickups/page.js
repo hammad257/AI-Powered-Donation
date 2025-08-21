@@ -15,6 +15,7 @@ export default function AvailablePickups() {
   const [mapToggle, setMapToggle] = useState({});
   const [userLocation, setUserLocation] = useState(null);
   const [viewNearestOnly, setViewNearestOnly] = useState(false);
+  const [dropoffCenter, setDropoffCenter] = useState(null)
 
   
   const itemsPerPage = 6;
@@ -58,6 +59,11 @@ export default function AvailablePickups() {
   };
 
   useEffect(() => {
+    const savedDropoff = localStorage.getItem("selectedDropoff");
+    if (savedDropoff) {
+      setDropoffCenter(JSON.parse(savedDropoff));
+    }
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -159,6 +165,19 @@ export default function AvailablePickups() {
 
   return (
     <div className="p-4">
+
+{dropoffCenter && (
+        <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 p-4 rounded-xl mb-6 shadow-md">
+          <h2 className="text-lg font-bold">🏢 Selected Dropoff Center</h2>
+          <p className="mt-2">
+            <strong>{dropoffCenter.ngoName}</strong><br />
+            📍 {dropoffCenter.locationName}
+          </p>
+          <p className="text-sm text-gray-600">
+            Added: {new Date(dropoffCenter.createdAt).toLocaleDateString()}
+          </p>
+        </div>
+      )}
 
 <div className="bg-green-100 border border-green-300 text-green-800 p-4 rounded-xl mb-6 shadow-md">
   <h2 className="text-lg font-bold">📍 Nearest Pickup</h2>

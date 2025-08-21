@@ -13,6 +13,7 @@ export default function MyPickups() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [dropoffCenter, setDropoffCenter] = useState(null)
   const itemsPerPage = 6;
 
   // Store which pickups have map toggled open (by _id)
@@ -38,6 +39,10 @@ export default function MyPickups() {
   };
 
   useEffect(() => {
+    const savedDropoff = localStorage.getItem("selectedDropoff");
+    if (savedDropoff) {
+      setDropoffCenter(JSON.parse(savedDropoff));
+    }
     fetchMyPickups();
   }, []);
 
@@ -68,6 +73,59 @@ export default function MyPickups() {
 
   return (
     <div className="p-4">
+
+{dropoffCenter && (
+  <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 p-4 rounded-xl mb-6 shadow-md">
+    <h2 className="text-lg font-bold">🏢 Selected Dropoff Center</h2>
+    <p className="mt-2"><strong>{dropoffCenter.ngoName}</strong></p>
+
+    <div className="flex items-center gap-2 mt-1">
+      <span className="font-medium text-gray-700">📍 {dropoffCenter.locationName}</span>
+      <span className="bg-red-100 text-red-700 px-2 py-1 rounded-md text-xs font-semibold shadow-sm">
+        ⚠️ Use this location for dropping the food
+      </span>
+    </div>
+
+    <p className="text-sm text-gray-600 mt-2">
+      Added: {new Date(dropoffCenter.createdAt).toLocaleDateString()}
+    </p>
+
+    {/* Buttons */}
+    <div className="flex gap-3 mt-4">
+      <button
+        onClick={() => setMapToggle((prev) => ({ ...prev, dropoff: true }))}
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >
+        Use Map
+      </button>
+      <button
+        onClick={() => setMapToggle((prev) => ({ ...prev, dropoff: false }))}
+        className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+      >
+        Back
+      </button>
+    </div>
+
+    {/* Conditionally render map to Dropoff */}
+    {mapToggle.dropoff && (
+      <div className="h-64 mt-3">
+        <DonationMiniMap
+          donation={{
+            lat: dropoffCenter.coordinates.lat,
+            lng: dropoffCenter.coordinates.lng,
+            foodType: dropoffCenter.ngoName,
+            location: dropoffCenter.locationName,
+            quantity: "Dropoff Center"
+          }}
+        />
+      </div>
+    )}
+  </div>
+)}
+
+
+
+
       {/* Header + Filters */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <h1 className="text-2xl font-bold">🚚 My Accepted Pickups</h1>
