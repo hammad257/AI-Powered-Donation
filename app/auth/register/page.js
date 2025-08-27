@@ -142,7 +142,7 @@ export default function RegisterPage() {
                   <option value="">Select Role</option>
                   <option value="admin">Admin</option>
                   <option value="donor">Donor</option>
-                  <option value="needy">Needy</option>
+                  {/* <option value="needy">Needy</option> */}
                   <option value="volunteer">Volunteer</option>
                 </Field>
                 <ErrorMessage name="role" component="div" className="text-sm text-red-500 mt-1" />
