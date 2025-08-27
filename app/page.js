@@ -4,25 +4,54 @@ import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { apiRequest } from "./services/api";
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { toast } from "react-toastify";
 
 export default function Home() {
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    needType: "food",
-    details: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const [files, setFiles] = useState([]);
+  const initialValues = {
+    name: '',
+    email: '',
+    phone: '',
+    reason: '',
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Needy request submitted:", formData);
-    // TODO: send to backend: POST /api/needy/request
-    setFormData({ name: "", phone: "", needType: "food", details: "" });
-    alert("✅ Your request has been submitted!");
+  const validationSchema = Yup.object({
+    name: Yup.string().required('Required'),
+    email: Yup.string().email('Invalid email').required('Required'),
+    phone: Yup.string().required('Required'),
+    reason: Yup.string().required('Reason is required'),
+  });
+
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    const formData = new FormData();
+    Object.entries(values).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    files.forEach((file) => {
+      formData.append('documents', file);
+    });
+
+    try {
+
+      const data = await apiRequest('/needy/request', 'POST', formData, null, true);
+
+      if (data) {
+        toast.success('Help request submitted');
+        resetForm();
+        setFiles([]);
+      } else {
+        toast.error(data.message || 'Submission failed');
+      }
+    } catch (err) {
+      toast.error('Something went wrong');
+      console.error('❌ Error:', err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -105,81 +134,141 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* 🌟 I Need Help Form Section */}
-      <section className="py-20 px-6 lg:px-20 bg-gray-50">
-        <div className="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl p-10 border border-indigo-100">
-          <h2 className="text-3xl font-bold text-center text-indigo-600">
-             I Need Help
-          </h2>
-          <p className="mt-2 text-gray-600 text-center">
-            Fill this form if you need food, money, or assistance. Our team will
-            reach out to you.
-          </p>
+     {/* 🌟 I Need Help Form Section */}
+<section className="py-20 px-6 lg:px-20 bg-gray-50">
+  <div className="max-w-3xl mx-auto bg-white shadow-2xl rounded-2xl p-10 border border-indigo-100">
+    <h2 className="text-3xl font-bold text-center text-indigo-600">
+      I Need Help
+    </h2>
+    <p className="mt-2 text-gray-600 text-center">
+      Fill this form if you need food, money, or assistance. Our team will
+      reach out to you.
+    </p>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-            <div>
-              <label className="block text-gray-700 font-medium">Full Name</label>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting }) => (
+        <Form className="space-y-6 mt-8">
+          {/* Name */}
+          <div>
+            <label className="block font-medium text-gray-700 mb-1">Name</label>
+            <Field
+              name="name"
+              className="border border-gray-300 w-full p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
+            />
+            <ErrorMessage
+              name="name"
+              component="div"
+              className="text-red-500 text-sm mt-1"
+            />
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className="block font-medium text-gray-700 mb-1">Email</label>
+            <Field
+              type="email"
+              name="email"
+              className="border border-gray-300 w-full p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
+            />
+            <ErrorMessage
+              name="email"
+              component="div"
+              className="text-red-500 text-sm mt-1"
+            />
+          </div>
+
+          {/* Phone */}
+          <div>
+            <label className="block font-medium text-gray-700 mb-1">Phone</label>
+            <Field
+              name="phone"
+              className="border border-gray-300 w-full p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
+            />
+            <ErrorMessage
+              name="phone"
+              component="div"
+              className="text-red-500 text-sm mt-1"
+            />
+          </div>
+
+          {/* Reason */}
+          <div>
+            <label className="block font-medium text-gray-700 mb-1">Reason</label>
+            <Field
+              as="textarea"
+              name="reason"
+              rows="3"
+              className="border border-gray-300 w-full p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
+            />
+            <ErrorMessage
+              name="reason"
+              component="div"
+              className="text-red-500 text-sm mt-1"
+            />
+          </div>
+
+          {/* File Upload */}
+          <div>
+            <label className="block font-medium text-gray-700 mb-2">
+              Upload Documents
+            </label>
+            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-indigo-400 transition">
               <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="mt-2 w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500"
-                placeholder="Enter your name"
+                type="file"
+                multiple
+                onChange={(e) => {
+                  const newFiles = Array.from(e.target.files);
+                  setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+                }}
+                className="hidden"
+                id="fileUpload"
               />
+              <label htmlFor="fileUpload" className="cursor-pointer text-gray-500">
+                📎 Click to select files (PNG, JPG, JPEG)
+              </label>
             </div>
 
-            <div>
-              <label className="block text-gray-700 font-medium">Phone Number</label>
-              <input
-                type="text"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-                className="mt-2 w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500"
-                placeholder="03xx-xxxxxxx"
-              />
-            </div>
+            {files.length > 0 && (
+              <ul className="mt-3 text-sm text-gray-700 space-y-2">
+                {files.map((file, i) => (
+                  <li
+                    key={i}
+                    className="flex items-center justify-between bg-gray-100 rounded-lg px-3 py-2"
+                  >
+                    <span className="truncate">{file.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFiles((prev) => prev.filter((_, idx) => idx !== i));
+                      }}
+                      className="ml-3 px-2 py-1 text-xs bg-red-500 text-white rounded-full hover:bg-red-600"
+                    >
+                      Cancel
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
-            <div>
-              <label className="block text-gray-700 font-medium">Type of Help</label>
-              <select
-                name="needType"
-                value={formData.needType}
-                onChange={handleChange}
-                className="mt-2 w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500"
-              >
-                <option value="food">🍛 Food</option>
-                <option value="money">💰 Money</option>
-                <option value="other">📦 Other</option>
-              </select>
-            </div>
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full py-3 rounded-xl text-white font-semibold bg-gradient-to-r from-indigo-600 to-pink-600 shadow-lg hover:opacity-90 transition-transform transform hover:scale-105"
+          >
+            {isSubmitting ? 'Submitting...' : 'Submit Request'}
+          </button>
+        </Form>
+      )}
+    </Formik>
+  </div>
+</section>
 
-            <div>
-              <label className="block text-gray-700 font-medium">Details</label>
-              <textarea
-                name="details"
-                value={formData.details}
-                onChange={handleChange}
-                rows="4"
-                className="mt-2 w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500"
-                placeholder="Explain your situation briefly..."
-              />
-            </div>
-
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              type="submit"
-              className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold text-lg shadow-md hover:bg-indigo-700 transition"
-            >
-              Submit Request
-            </motion.button>
-          </form>
-        </div>
-      </section>
 
       {/* Features Section */}
       <section className="py-20 px-6 lg:px-20 bg-white">
