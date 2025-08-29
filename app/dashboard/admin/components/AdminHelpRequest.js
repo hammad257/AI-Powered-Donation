@@ -6,6 +6,7 @@ import { apiRequest } from '../../../services/api';
 import { toast } from 'react-toastify';
 import StatusModal from '../../../components/StatusModal';
 import * as XLSX from 'xlsx';
+import ImageModal from './ImageModal';
 
 const statuses = ['all', 'pending', 'under_review', 'approved', 'rejected'];
 
@@ -20,7 +21,14 @@ export default function AdminHelpRequests() {
   const [searchName, setSearchName] = useState('');
   const [searchDate, setSearchDate] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [modalImages, setModalImages] = useState([]);
   const itemsPerPage = 5;
+
+   const openImageModal = (images) => {
+    setModalImages(images);
+    setImageModalOpen(true);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -195,6 +203,7 @@ export default function AdminHelpRequests() {
               <th className="p-3 border">Reason</th>
               <th className="p-3 border">Status</th>
               <th className="p-3 border">Admin Notes</th>
+              <th className="p-3 border">Phone</th>
               <th className="p-3 border">Docs</th>
               <th className="p-3 border">Submitted</th>
               <th className="p-3 border">Actions</th>
@@ -219,17 +228,27 @@ export default function AdminHelpRequests() {
                   {req.status}
                 </td>
                 <td className="p-2 border">{req.adminNotes || '—'}</td>
-                <td className="p-2 border">
+                <td className="p-2 border">{req.phone || '—'}</td>
+                 <td className="p-2 border">
                   <div className="flex gap-2 flex-wrap justify-center">
-                    {req.documents?.map((doc, i) => (
-                      <a key={i} href={doc} target="_blank" rel="noopener noreferrer">
+                    {req.documents?.length === 1 ? (
+                      <a href={req.documents[0]} target="_blank" rel="noopener noreferrer">
                         <img
-                          src={doc}
-                          alt={`doc-${i}`}
+                          src={req.documents[0]}
+                          alt="doc"
                           className="w-12 h-12 object-cover border rounded"
                         />
                       </a>
-                    ))}
+                    ) : req.documents?.length > 1 ? (
+                      <button
+                        onClick={() => openImageModal(req.documents)}
+                        className="text-blue-600 underline"
+                      >
+                        📂 {req.documents.length} Documents
+                      </button>
+                    ) : (
+                      "—"
+                    )}
                   </div>
                 </td>
                 <td className="p-2 border text-xs">
@@ -241,6 +260,14 @@ export default function AdminHelpRequests() {
           </tbody>
         </table>
       </div>
+
+       {imageModalOpen && (
+        <ImageModal
+          isOpen={imageModalOpen}
+          images={modalImages}
+          onClose={() => setImageModalOpen(false)}
+        />
+      )}
 
       {totalPages > 1 && (
         <div className="flex justify-center mt-4 gap-2">

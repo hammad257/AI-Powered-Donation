@@ -55,7 +55,11 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-blue-100 to-purple-100 px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 px-4">
+         <Link href="/" className="text-4xl font-extrabold text-blue-700 mb-6 hover:underline">
+      Empower Communities
+through Food & Charity
+    </Link>
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Create Account</h1>
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
