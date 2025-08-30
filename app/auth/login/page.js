@@ -10,7 +10,7 @@ import { apiRequest } from '@/app/services/api';
 import Link from 'next/link';
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react'; // using lucide icons
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react'; // using lucide icons
 
 // ...imports remain same
 export default function LoginPage() {
@@ -89,10 +89,12 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 px-4">
-       <Link href="/" className="text-4xl font-extrabold text-blue-700 mb-6 hover:underline">
-      Empower Communities
-through Food & Charity
-    </Link>
+        <Link
+        href="/"
+        className="absolute top-6 left-6 flex items-center text-blue-700 hover:underline font-medium"
+      >
+        <ArrowLeft className="w-5 h-5 mr-2" /> Back to Home
+      </Link>
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Welcome Back 👋</h1>
 
