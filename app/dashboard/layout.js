@@ -64,7 +64,7 @@ export default function DashboardLayout({ children }) {
     }
     if (profile.role === 'donor') {
       return [
-        { href: '/dashboard/donor', label: 'Donor Dashboard' },
+        { href: '/dashboard/donor', label: 'Overview' },
         { href: '/dashboard/donor/food-donation', label: 'Food Donations' },
         { href: '/dashboard/donor/money-donation', label: 'Money Donations' },
        
