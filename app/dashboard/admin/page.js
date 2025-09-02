@@ -6,8 +6,10 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 import { apiRequest } from '@/app/services/api';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { useTranslation } from "react-i18next";
 
 export default function AdminDashboardPage() {
+  const { t } = useTranslation();
   const { token } = useSelector((state) => state.auth);
 
   const [stats, setStats] = useState({});
@@ -56,51 +58,47 @@ export default function AdminDashboardPage() {
     fetchData();
   }, [token]);
 
-  console.log(dropoff, 'dropoffs');
-
-
   return (
     <ProtectedRoute allowedRoles={['admin']}>
       <div className="min-h-screen bg-gray-50 p-6">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800">📊 Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-6 text-gray-800">📊 {t("admin.dashboard")}</h1>
 
         {/* Stat Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          <StatCard title="Total Users" value={stats?.users?.total || 'Loading...'} />
-          <StatCard title="Total Donations" value={stats?.users?.donors || 'Loading...'} />
-          <StatCard title="Volunteers" value={stats?.users?.volunteers || 'Loading...'} />
+          <StatCard title={t("admin.totalUsers")} value={stats?.users?.total || 'Loading...'} />
+          <StatCard title={t("admin.totalDonations")} value={stats?.users?.donors || 'Loading...'} />
+          <StatCard title={t("admin.volunteers")} value={stats?.users?.volunteers || 'Loading...'} />
           <StatCard
-            title="Delivered Orders"
+            title={t("admin.deliveredOrders")}
             value={stats?.donations?.delivered || 'Loading...'}
-            subtitle={`Total: ${stats?.donations?.total || 0}`}
+            subtitle={`${t("admin.total")}: ${stats?.donations?.total || 0}`}
           />
         </div>
 
         {/* Dropoff Center Card */}
         <div className="bg-white p-6 rounded-lg shadow mb-10">
-          <h2 className="text-xl font-semibold mb-4 text-gray-700">🏢 Food Dropoff Centers</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-700">🏢 {t("admin.dropoffCenters")}</h2>
           <p className="text-2xl font-bold text-green-600 mb-3">{dropoff.total}</p>
 
           {/* Recently Added */}
-          <h3 className="text-md font-medium text-gray-600 mb-2">Recently Added</h3>
+          <h3 className="text-md font-medium text-gray-600 mb-2">{t("admin.recentlyAdded")}</h3>
           {dropoff?.dropoffs?.length > 0 && (
             <div key={dropoff.dropoffs[0]._id} className="mb-4">
               <p>
-                <span className="font-semibold">Name:</span> {dropoff.dropoffs[0].ngoName} —{" "}
+                <span className="font-semibold">{t("admin.name")}:</span> {dropoff.dropoffs[0].ngoName} —{" "}
                 <span className="text-gray-500 text-sm">
                   {new Date(dropoff.dropoffs[0].createdAt).toLocaleDateString()}
                 </span>
               </p>
               <p>
-                <span className="font-semibold">Location:</span> {dropoff?.dropoffs[0]?.locationName}
+                <span className="font-semibold">{t("admin.location")}:</span> {dropoff?.dropoffs[0]?.locationName}
               </p>
             </div>
           )}
 
           {/* Dropdown with all centers */}
-          <h3 className="text-md font-medium text-gray-600 mb-2">All Dropoff Centers</h3>
-          <select className="w-full border rounded-lg p-2"
-          >
+          <h3 className="text-md font-medium text-gray-600 mb-2">{t("admin.allDropoffCenters")}</h3>
+          <select className="w-full border rounded-lg p-2">
             {dropoff?.dropoffs?.map((center) => (
               <option key={center._id} value={center._id} >
                 {center.ngoName} — {center.locationName}
@@ -109,14 +107,13 @@ export default function AdminDashboardPage() {
           </select>
         </div>
 
-
         {/* Chart */}
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-700">📈 Daily Activity</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-700">📈 {t("admin.dailyActivity")}</h2>
           <div className="h-80">
             {graphData.length === 0 ? (
               <div className="flex h-full items-center justify-center text-gray-500 text-sm">
-                No activity yet.
+                {t("admin.noActivity")}
               </div>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
@@ -126,8 +123,8 @@ export default function AdminDashboardPage() {
                   <YAxis allowDecimals={false} />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="donations" fill="#10b981" name="Donations" />
-                  <Bar dataKey="deliveries" fill="#3b82f6" name="Deliveries" />
+                  <Bar dataKey="donations" fill="#10b981" name={t("admin.donations")} />
+                  <Bar dataKey="deliveries" fill="#3b82f6" name={t("admin.deliveries")} />
                 </BarChart>
               </ResponsiveContainer>
             )}

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { apiRequest } from '../../../services/api';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -14,6 +15,7 @@ export default function ManageAdminMoneyDonations() {
   const [statusFilter, setStatusFilter] = useState('pending');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+   const { t } = useTranslation();
 
   const fetchDonations = async () => {
     try {
@@ -95,12 +97,12 @@ export default function ManageAdminMoneyDonations() {
         <table className="w-full table-auto bg-white">
           <thead className="bg-gray-100 text-sm text-gray-700">
             <tr>
-              <th className="text-left p-3">Donor</th>
-              <th className="text-left p-3">Amount</th>
-              <th className="text-left p-3">Purpose</th>
-              <th className="text-left p-3">Status</th>
-              <th className="text-left p-3">Date</th>
-              <th className="text-left p-3">Actions</th>
+ <th className="text-left p-3">{t("donations.table.donor")}</th>
+              <th className="text-left p-3">{t("donations.table.amount")}</th>
+              <th className="text-left p-3">{t("donations.table.purpose")}</th>
+              <th className="text-left p-3">{t("donations.table.status")}</th>
+              <th className="text-left p-3">{t("donations.table.date")}</th>
+              <th className="text-left p-3">{t("donations.table.actions")}</th>
             </tr>
           </thead>
           <tbody>

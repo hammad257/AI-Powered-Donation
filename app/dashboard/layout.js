@@ -10,6 +10,7 @@ import { setProfilePicture } from '../redux/features/authSlice';
 import { signOut, useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function DashboardLayout({ children }) {
   const { token } = useSelector((state) => state.auth);
@@ -19,6 +20,8 @@ export default function DashboardLayout({ children }) {
   const dispatch = useDispatch();
   const { data: session } = useSession();
   const pathname = usePathname();
+  const { t } = useTranslation();
+
 
   // Fetch profile
   useEffect(() => {
@@ -50,45 +53,41 @@ export default function DashboardLayout({ children }) {
   const links = useMemo(() => {
     if (!profile?.role) return [];
 
-    const common = [{ href: '/dashboard/profile', label: 'Profile' }];
     if (profile.role === 'admin') {
       return [
-        { href: '/dashboard/admin', label: 'Admin Dashboard' },
-        { href: '/dashboard/admin/users', label: 'Manage Users' },
-        { href: '/dashboard/admin/requests', label: 'Needy Requests' },
-        { href: '/dashboard/admin/money-donations', label: 'Manage Money Donation' },
-        { href: '/dashboard/admin/food-delivered', label: 'Delivered Pickups' },
-        { href: '/dashboard/admin/dropoff', label: 'DropOff Center' },
-        
+        { href: '/dashboard/admin', label: t('sidebar.adminDashboard') },
+        { href: '/dashboard/admin/users', label: t('sidebar.manageUsers') },
+        { href: '/dashboard/admin/requests', label: t('sidebar.needyRequests') },
+        { href: '/dashboard/admin/money-donations', label: t('sidebar.manageMoneyDonations') },
+        { href: '/dashboard/admin/food-delivered', label: t('sidebar.deliveredPickups') },
+        { href: '/dashboard/admin/dropoff', label: t('sidebar.dropOffCenter') },
       ];
     }
     if (profile.role === 'donor') {
       return [
-        { href: '/dashboard/donor', label: 'Overview' },
-        { href: '/dashboard/donor/food-donation', label: 'Food Donations' },
-        { href: '/dashboard/donor/money-donation', label: 'Money Donations' },
-       
+        { href: '/dashboard/donor', label: t('sidebar.overview') },
+        { href: '/dashboard/donor/food-donation', label: t('sidebar.foodDonations') },
+        { href: '/dashboard/donor/money-donation', label: t('sidebar.moneyDonations') },
       ];
     }
     if (profile.role === 'volunteer') {
       return [
-        { href: '/dashboard/volunteer', label: 'Volunteer Dashboard' },
-        { href: '/dashboard/volunteer/available-pickups', label: 'Available Pickup' },
-        { href: '/dashboard/volunteer/my-pickups', label: 'My Pickups' },
-        { href: '/dashboard/volunteer/my-deliveries', label: 'My Deliveries' },
-        
+        { href: '/dashboard/volunteer', label: t('sidebar.volunteerDashboard') },
+        { href: '/dashboard/volunteer/available-pickups', label: t('sidebar.availablePickups') },
+        { href: '/dashboard/volunteer/my-pickups', label: t('sidebar.myPickups') },
+        { href: '/dashboard/volunteer/my-deliveries', label: t('sidebar.myDeliveries') },
       ];
     }
     if (profile.role === 'needy') {
       return [
-        { href: '/dashboard/needy', label: 'Needy Dashboard' },
-        { href: '/dashboard/needy/myRequest', label: 'My Request' },
-        { href: '/dashboard/needy/submitRequest', label: 'Submit Request' },
-       
+        { href: '/dashboard/needy', label: t('sidebar.needyDashboard') },
+        { href: '/dashboard/needy/myRequest', label: t('sidebar.myRequest') },
+        { href: '/dashboard/needy/submitRequest', label: t('sidebar.submitRequest') },
       ];
     }
-    return common;
-  }, [profile]);
+    return [{ href: '/dashboard/profile', label: t('sidebar.profile') }];
+  }, [profile, t]);
+
 
   // Compute the single best active href:
   const activeHref = useMemo(() => {
@@ -110,10 +109,9 @@ export default function DashboardLayout({ children }) {
   }, [pathname, links]);
 
   const linkClasses = (href) =>
-    `block px-3 py-2 rounded transition text-sm ${
-      activeHref === href
-        ? 'bg-blue-600 text-white font-semibold'
-        : 'hover:bg-gray-700 text-white/90'
+    `block px-3 py-2 rounded transition text-sm ${activeHref === href
+      ? 'bg-blue-600 text-white font-semibold'
+      : 'hover:bg-gray-700 text-white/90'
     }`;
 
   // Custom NavLink that also closes drawer on click
@@ -164,11 +162,20 @@ export default function DashboardLayout({ children }) {
       </div>
 
       <div className="mt-6 pt-4 border-t border-gray-700">
+
+        <div className={linkClasses('/dashboard/settin')}>
+          <Link href="/dashboard/setting" onClick={() => setSidebarOpen(false)}>
+            {t('sidebar.settings')}
+          </Link>
+
+        </div>
+
         {/* Keep profile & logout at bottom */}
         <div className={linkClasses('/dashboard/profile')}>
           <Link href="/dashboard/profile" onClick={() => setSidebarOpen(false)}>
-            Profile
+            {t('sidebar.profile')}
           </Link>
+
         </div>
 
         {session ? (
@@ -176,8 +183,9 @@ export default function DashboardLayout({ children }) {
             onClick={() => signOut({ callbackUrl: '/auth/login' })}
             className="w-full mt-2 bg-red-600 text-white py-2 rounded hover:bg-red-700"
           >
-            Logout (Google)
+            {t('sidebar.logoutGoogle')}
           </button>
+
         ) : token ? (
           <div className="mt-2">
             <LogoutButton />
@@ -189,52 +197,52 @@ export default function DashboardLayout({ children }) {
 
   return (
     <ProtectedRoute>
-    <div className="flex min-h-screen">
-  {/* Mobile top bar button (always above map) */}
-  <div className="md:hidden fixed top-3 left-3 z-[9999]">
-    <button
-      aria-label="Open menu"
-      onClick={() => setSidebarOpen(true)}
-      className="p-2 rounded bg-gray-800 text-white shadow-md hover:bg-gray-700"
-    >
-      <Menu size={20} />
-    </button>
-  </div>
+      <div className="flex min-h-screen">
+        {/* Mobile top bar button (always above map) */}
+        <div className="md:hidden fixed top-3 left-3 z-[9999]">
+          <button
+            aria-label="Open menu"
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 rounded bg-gray-800 text-white shadow-md hover:bg-gray-700"
+          >
+            <Menu size={20} />
+          </button>
+        </div>
 
-  {/* Desktop sidebar */}
-  <aside className="hidden md:flex md:w-64 bg-gray-800 text-white p-4 flex-col justify-between">
-    <SidebarContent />
-  </aside>
+        {/* Desktop sidebar */}
+        <aside className="hidden md:flex md:w-64 bg-gray-800 text-white p-4 flex-col justify-between">
+          <SidebarContent />
+        </aside>
 
-  {/* Mobile drawer (slide-in) */}
-  <div
-    className={`fixed inset-y-0 left-0 z-[9998] w-64 transform bg-gray-800 text-white p-4 transition-transform duration-200 ease-in-out md:hidden
+        {/* Mobile drawer (slide-in) */}
+        <div
+          className={`fixed inset-y-0 left-0 z-[9998] w-64 transform bg-gray-800 text-white p-4 transition-transform duration-200 ease-in-out md:hidden
       ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
-  >
-    <div className="flex items-center justify-between mb-4">
-      <h3 className="text-lg font-bold">Menu</h3>
-      <button
-        aria-label="Close menu"
-        onClick={() => setSidebarOpen(false)}
-        className="p-1 rounded hover:bg-gray-700"
-      >
-        <X size={18} />
-      </button>
-    </div>
-    <SidebarContent />
-  </div>
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold">Menu</h3>
+            <button
+              aria-label="Close menu"
+              onClick={() => setSidebarOpen(false)}
+              className="p-1 rounded hover:bg-gray-700"
+            >
+              <X size={18} />
+            </button>
+          </div>
+          <SidebarContent />
+        </div>
 
-  {/* overlay for mobile */}
-  {sidebarOpen && (
-    <div
-      className="fixed inset-0 z-[9997] bg-black bg-opacity-40 md:hidden"
-      onClick={() => setSidebarOpen(false)}
-    />
-  )}
+        {/* overlay for mobile */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 z-[9997] bg-black bg-opacity-40 md:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
 
-  {/* Main content */}
-  <main className="flex-1 p-6 bg-gray-100 min-h-screen">{children}</main>
-</div>
+        {/* Main content */}
+        <main className="flex-1 p-6 bg-gray-100 min-h-screen">{children}</main>
+      </div>
 
     </ProtectedRoute>
   );

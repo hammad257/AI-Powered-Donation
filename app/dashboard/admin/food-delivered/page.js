@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { apiRequest } from '@/app/services/api';
+import { useTranslation } from 'react-i18next';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -11,6 +12,7 @@ export default function AdminDeliveredPickups() {
   const { token } = useSelector((state) => state.auth);
   const [deliveries, setDeliveries] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+   const { t } = useTranslation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,7 +43,7 @@ export default function AdminDeliveredPickups() {
 
   return (
     <div className="p-4 bg-white shadow rounded-lg">
-      <h1 className="text-2xl font-bold mb-6">Delivered Food Pickups</h1>
+      <h1 className="text-2xl font-bold mb-6">{t('deliveredPickups.title')}</h1>
 
       {deliveries.length === 0 ? (
         <p className="text-gray-500">No delivered food donations yet.</p>
@@ -50,11 +52,11 @@ export default function AdminDeliveredPickups() {
           <table className="min-w-full table-auto divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="text-left px-4 py-2 text-sm font-medium text-gray-600">Food Type</th>
-                <th className="text-left px-4 py-2 text-sm font-medium text-gray-600">Donor</th>
-                <th className="text-left px-4 py-2 text-sm font-medium text-gray-600">Volunteer</th>
-                <th className="text-left px-4 py-2 text-sm font-medium text-gray-600">Location</th>
-                <th className="text-left px-4 py-2 text-sm font-medium text-gray-600">Delivered At</th>
+                <th className="text-left px-4 py-2 text-sm font-medium text-gray-600">{t('deliveredPickups.foodType')}</th>
+                <th className="text-left px-4 py-2 text-sm font-medium text-gray-600">{t('deliveredPickups.donor')}</th>
+                <th className="text-left px-4 py-2 text-sm font-medium text-gray-600">{t('deliveredPickups.volunteer')}</th>
+                <th className="text-left px-4 py-2 text-sm font-medium text-gray-600">{t('deliveredPickups.location')}</th>
+                <th className="text-left px-4 py-2 text-sm font-medium text-gray-600">{t('deliveredPickups.deliveredAt')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
