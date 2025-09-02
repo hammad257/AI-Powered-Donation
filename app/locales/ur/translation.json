@@ -1,0 +1,91 @@
+{
+  "admin": {
+    "dashboard": "ایڈمن ڈیش بورڈ",
+    "totalUsers": "کل صارفین",
+    "totalDonations": "کل عطیات",
+    "volunteers": "رضاکار",
+    "deliveredOrders": "پہنچائے گئے آرڈرز",
+    "total": "کل",
+    "dropoffCenters": "فوڈ ڈراپ آف سینٹرز",
+    "recentlyAdded": "حال ہی میں شامل کیا گیا",
+    "allDropoffCenters": "تمام ڈراپ آف سینٹرز",
+    "name": "نام",
+    "location": "مقام",
+    "dailyActivity": "یومیہ سرگرمی",
+    "noActivity": "ابھی تک کوئی سرگرمی نہیں۔",
+    "donations": "عطیات",
+    "deliveries": "ڈلیوریز"
+  },
+   "manageUsers": {
+    "heading": "یوزرز کا انتظام کریں",
+    "name": "نام",
+    "email": "ای میل",
+    "role": "کردار",
+    "status": "حالت",
+    "actions": "اعمال",
+    "confirmDelete": "کیا آپ واقعی اس صارف کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں لیا جا سکتا۔",
+    "userDeleted": "صارف حذف ہو گیا",
+    "deleteFailed": "صارف کو حذف کرنے میں ناکامی",
+    "confirmBlock": "کیا آپ اس صارف کو بلاک کرنا چاہتے ہیں؟",
+    "confirmUnblock": "کیا آپ اس صارف کو ان بلاک کرنا چاہتے ہیں؟",
+    "userBlocked": "صارف بلاک ہو گیا",
+    "userUnblocked": "صارف ان بلاک ہو گیا",
+    "actionFailed": "عمل ناکام ہوا"
+  },
+  "helpRequests": {
+    "table": {
+      "ManageNeedyRequest":"ضرورت مند درخواست",  
+      "name": "نام",
+      "reason": "وجہ",
+      "status": "حالت",
+      "adminNotes": "ایڈمن نوٹس",
+      "phone": "فون",
+      "docs": "دستاویزات",
+      "submitted": "جمع کروایا گیا",
+      "actions": "عمل"
+    }
+  },
+  "donations": {
+    "table": {
+        "ManageMoneyDonation":"رقم کے عطیہ کا انتظام",
+      "donor": "عطیہ دہندہ",
+      "amount": "رقم",
+      "purpose": "مقصد",
+      "status": "حالت",
+      "date": "تاریخ",
+      "actions": "عمل"
+    }
+},
+"deliveredPickups": {
+    "title": "پہنچائی گئی کھانے کی پک اپس",
+    "noData": "ابھی تک کوئی کھانے کے عطیات نہیں پہنچائے گئے۔",
+    "foodType": "کھانے کی قسم",
+    "donor": "عطیہ دہندہ",
+    "volunteer": "رضاکار",
+    "location": "مقام",
+    "deliveredAt": "پہنچانے کا وقت",
+    "CreateDropoffCenter":"ڈراپ آف سینٹر"
+  },
+   "sidebar": {
+    "title": "اے آئی سے چلنے والا عطیہ",
+    "adminDashboard": "ایڈمن ڈیش بورڈ",
+    "manageUsers": "صارفین کا انتظام",
+    "needyRequests": "مستحق افراد کی درخواستیں",
+    "manageMoneyDonations": "رقمی عطیات کا انتظام",
+    "deliveredPickups": "پہنچائی گئی اشیاء",
+    "dropOffCenter": "جمع کرنے کا مرکز",
+    "overview": "جائزہ",
+    "foodDonations": "خوراک کے عطیات",
+    "moneyDonations": "رقمی عطیات",
+    "volunteerDashboard": "رضاکار ڈیش بورڈ",
+    "availablePickups": "دستیاب اشیاء",
+    "myPickups": "میری اشیاء",
+    "myDeliveries": "میری ترسیلات",
+    "needyDashboard": "مستحق ڈیش بورڈ",
+    "myRequest": "میری درخواست",
+    "submitRequest": "درخواست جمع کریں",
+    "settings": "ترتیبات",
+    "profile": "پروفائل",
+    "logoutGoogle": "لاگ آؤٹ"
+  }
+}

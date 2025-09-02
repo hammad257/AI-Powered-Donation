@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import StatusModal from '../../../components/StatusModal';
 import * as XLSX from 'xlsx';
 import ImageModal from './ImageModal';
+import { useTranslation } from "react-i18next";
 
 const statuses = ['all', 'pending', 'under_review', 'approved', 'rejected'];
 
@@ -24,6 +25,7 @@ export default function AdminHelpRequests() {
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [modalImages, setModalImages] = useState([]);
   const itemsPerPage = 5;
+  const { t } = useTranslation();
 
    const openImageModal = (images) => {
     setModalImages(images);
@@ -199,14 +201,14 @@ export default function AdminHelpRequests() {
         <table className="w-full text-sm">
           <thead className="bg-gray-100">
             <tr>
-              <th className="p-3 border">Name</th>
-              <th className="p-3 border">Reason</th>
-              <th className="p-3 border">Status</th>
-              <th className="p-3 border">Admin Notes</th>
-              <th className="p-3 border">Phone</th>
-              <th className="p-3 border">Docs</th>
-              <th className="p-3 border">Submitted</th>
-              <th className="p-3 border">Actions</th>
+              <th className="p-3 border">{t("helpRequests.table.name")}</th>
+              <th className="p-3 border">{t("helpRequests.table.reason")}</th>
+              <th className="p-3 border">{t("helpRequests.table.status")}</th>
+              <th className="p-3 border">{t("helpRequests.table.adminNotes")}</th>
+              <th className="p-3 border">{t("helpRequests.table.phone")}</th>
+              <th className="p-3 border">{t("helpRequests.table.docs")}</th>
+              <th className="p-3 border">{t("helpRequests.table.submitted")}</th>
+              <th className="p-3 border">{t("helpRequests.table.actions")}</th>
             </tr>
           </thead>
           <tbody>

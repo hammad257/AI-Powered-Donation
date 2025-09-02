@@ -7,11 +7,13 @@ import AdminDropoffMap from "../components/AdminDropoffMap";
 import { apiRequest } from '@/app/services/api';
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 export default function DropoffPage() {
   const [coords, setCoords] = useState(null);
   const [saving, setSaving] = useState(false);
   const { token } = useSelector((state) => state.auth);
+   const { t } = useTranslation();
 
   const initialValues = {
     ngoName: "",
@@ -53,7 +55,7 @@ export default function DropoffPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Create Drop-off Center</h1>
+      <h1 className="text-2xl font-bold">{t('deliveredPickups.CreateDropoffCenter')}</h1>
 
       <Formik
         initialValues={initialValues}

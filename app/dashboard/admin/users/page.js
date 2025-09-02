@@ -7,10 +7,12 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { apiRequest } from '@/app/services/api';
 import Link from 'next/link';
+import { useTranslation } from "react-i18next";
 
 
 export default function ManageUsersPage() {
   const { token } = useSelector((state) => state.auth);
+    const { t } = useTranslation();
 
   // state
   const [users, setUsers] = useState([]);
@@ -118,7 +120,7 @@ export default function ManageUsersPage() {
   return (
     <ProtectedRoute allowedRoles={['admin']}>
       <div className="min-h-screen p-6 bg-gray-50">
-        <h1 className="text-2xl font-bold mb-4">Manage Users</h1>
+        <h1 className="text-2xl font-bold mb-4">{t("manageUsers.heading")}</h1>
 
         {/* Search and Filters */}
         <div className="flex flex-wrap gap-4 mb-6">
@@ -177,11 +179,11 @@ export default function ManageUsersPage() {
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-gray-100 text-left text-gray-600 uppercase text-xs">
               <tr>
-                <th className="px-6 py-3">Name</th>
-                <th className="px-6 py-3">Email</th>
-                <th className="px-6 py-3">Role</th>
-                <th className="px-6 py-3">Status</th>
-                <th className="px-6 py-3">Actions</th>
+                <th className="px-6 py-3">{t("manageUsers.name")}</th>
+                <th className="px-6 py-3">{t("manageUsers.email")}</th>
+                <th className="px-6 py-3">{t("manageUsers.role")}</th>
+                <th className="px-6 py-3">{t("manageUsers.status")}</th>
+                <th className="px-6 py-3">{t("manageUsers.actions")}</th>
               </tr>
             </thead>
 
